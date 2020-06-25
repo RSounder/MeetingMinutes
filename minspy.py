@@ -1,22 +1,9 @@
 import PySimpleGUI as sg
 import datetime
 import time
-import speech_recognition as sr
 import os
-import cv2
 import keyboard
-import pyaudio
-import wave
- 
-FORMAT = pyaudio.paInt16
-CHANNELS = 2
-RATE = 44100
-CHUNK = 1024
-RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "output.wav"
 
-audio = pyaudio.PyAudio()
- 
 def append_file(file_name, lines_to_append):
     
     with open(file_name, "a+") as file_object:
@@ -67,7 +54,6 @@ BPAD_BOTTOM = (100,0)
 d2 = today.strftime("%A, %b-%d-%Y  ")
 timenow = now = datetime.datetime.now()
 timenow1 = time.strftime("%H:%M:%S")
-timenow2 = time.strftime("%M_%S")
 
 top_banner = [[sg.Text('Minute-inator'+ ' '*50, font='Any 20', background_color=DARK_HEADER_COLOR),
                sg.Text(d2, font='Any 20', background_color=DARK_HEADER_COLOR), sg.Button(' X ')]]
