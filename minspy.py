@@ -16,34 +16,9 @@ RECORD_SECONDS = 5
 WAVE_OUTPUT_FILENAME = "output.wav"
 
 audio = pyaudio.PyAudio()
-
-def speech2text(audfile):
-
-    print(audfile)    
-    AUDIO_FILE = (audfile) 
-      
-    # use the audio file as the audio source 
-      
-    r = sr.Recognizer() 
-      
-    with sr.AudioFile(AUDIO_FILE) as source: 
-        #reads the audio file. Here we use record instead of 
-        #listen 
-        audio = r.record(source)   
-      
-    try: 
-        return(r.recognize_google(audio)) 
-      
-    except sr.UnknownValueError: 
-        return("Google Speech Recognition could not understand audio") 
-      
-    except sr.RequestError as e: 
-        return("Could not request results from Google Speech Recognition service; {0}".format(e)) 
-
-
  
 def append_file(file_name, lines_to_append):
-    # Open the file in append & read mode ('a+')
+    
     with open(file_name, "a+") as file_object:
         appendEOL = False
         # Move read cursor to the start of file.
@@ -54,8 +29,7 @@ def append_file(file_name, lines_to_append):
             appendEOL = True
         # Iterate over each string in the list
         for line in lines_to_append:
-            # If file is not empty then append '\n' before first line for
-            # other lines always append '\n' before appending line
+
             if appendEOL == True:
                 file_object.write("\n")
             else:
@@ -76,7 +50,6 @@ theme_dict = {'BACKGROUND': '#2B475D',
                 'PROGRESS': ('#FFFFFF', '#C7D5E0'),
                 'BORDER': 1,'SLIDER_DEPTH': 0, 'PROGRESS_DEPTH': 0}
 
-# sg.theme_add_new('Dashboard', theme_dict)     # if using 4.20.0.1+
 sg.LOOK_AND_FEEL_TABLE['Dashboard'] = theme_dict
 sg.theme('Dashboard')
 
@@ -119,19 +92,6 @@ block_2 = [[sg.Text('Auto Transcribe', font='Any 15')],
             [sg.Text('Speaker:', size = (10,1)), sg.InputCombo(values = attnlis, size=(20, 1),key='aspker'),sg.Button('Start Recording')] ,
             [sg.Text('', size = (10,1)),sg.Multiline(' ', size = (40,3))  ],[sg.Text(' ', size = (43,1)),sg.Button('Enter')]]
 
-#[sg.Image(data=sg.DEFAULT_BASE64_ICON)] #for logo
-
-##layout = [
-##          [sg.Text('Please enter your Name, Address, Phone')],
-##          [sg.Text('Name', size=(15, 1)), sg.InputText('name', key='name')],
-##          [sg.Text('Address', size=(15, 1)), sg.InputText('address', key='address')],
-##          [sg.Text('Phone', size=(15, 1)), sg.InputText('phone', key='phone')],
-##          [sg.Submit(), sg.Cancel()]
-##         ]
-##
-##button, values = form.LayoutAndRead(layout)
-##
-##print(button, values['name'], values['address'], values['phone'])
 
 block_3 = [[sg.Text('Manual Minutes', font='Any 15')],
             [sg.Text('Speaker:',size = (10,1)), sg.InputCombo(values = attnlis, size=(20, 1),key='manspker')],
@@ -145,7 +105,6 @@ block_5 = [[sg.Text('Text to PDF', font='Any 15')],
             [sg.Input(), sg.FileBrowse()],
             [sg.Text(' ', size = (32,1)), sg.Button('Convert')]]
 
-#sg.Column(block_4, size=(450, 330), pad=BPAD_RIGHT)
 layout = [[sg.Column(top_banner, size=(960, 60), pad=(0,0), background_color=DARK_HEADER_COLOR)],
           [sg.Column(top, size=(910, 90), pad=BPAD_TOP)],
           [sg.Column([[sg.Column(block_2, size=(440,160), pad=BPAD_LEFT_INSIDE)],
@@ -156,7 +115,10 @@ layout = [[sg.Column(top_banner, size=(960, 60), pad=(0,0), background_color=DAR
 
 window = sg.Window('Dashboard PySimpleGUI-Style', layout, margins=(0,0), background_color=BORDER_COLOR, no_titlebar=True, grab_anywhere=True)
 
-while True:             # Event Loop
+while True:
+
+    # Event Loop
+
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == ' X ':
         break
@@ -176,7 +138,7 @@ while True:             # Event Loop
         pass
     
     if event == 'addattnbut':
-        #manual writing of text from text box
+        #add attends
         window.Element('cons1').Update('Added' + ' ' + values['addattn'])
 
         attnlis.append(values['addattn'])
