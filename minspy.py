@@ -76,7 +76,7 @@ top  = [[sg.Text('Meeting Name here', size=(50,1), justification='c', pad=BPAD_T
 
 block_2 = [[sg.Text('Auto Transcribe', font='Any 15')],
             [sg.Text('Speaker:', size = (10,1)), sg.InputCombo(values = attnlis, size=(20, 1),key='aspker'),sg.Button('Start Recording')] ,
-            [sg.Text('', size = (10,1)),sg.Multiline(' ', size = (40,3))  ],[sg.Text(' ', size = (43,1)),sg.Button('Enter')]]
+            [sg.Text('', size = (10,1)),sg.Multiline(' ', size = (40,3), key ='autospeech')  ],[sg.Text(' ', size = (35,1)),sg.Button('Commit'),sg.Button('Enter')]]
 
 
 block_3 = [[sg.Text('Manual Minutes', font='Any 15')],
@@ -121,6 +121,13 @@ while True:
         window.Element('cons1').Update('Manual Enter Pressed')
         li = [values['manspker'] + ' at ' + str(timenow1) + ': ', values['manspeech']] 
         append_file(file_name, li)
+        pass
+
+    if event == 'Commit':
+        #publishing text from s2t.txt to multiline
+        with open('s2t.txt') as ff:
+            datastr = ff.read()
+        window.Element('autospeech').Update(datastr)
         pass
     
     if event == 'addattnbut':
