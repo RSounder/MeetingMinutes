@@ -53,7 +53,6 @@ BPAD_BOTTOM = (100,0)
 
 d2 = today.strftime("%A, %b-%d-%Y  ")
 timenow = now = datetime.datetime.now()
-timenow1 = time.strftime("%H:%M:%S")
 
 top_banner = [[sg.Text('Minute-inator'+ ' '*50, font='Any 20', background_color=DARK_HEADER_COLOR),
                sg.Text(d2, font='Any 20', background_color=DARK_HEADER_COLOR), sg.Button(' X ')]]
@@ -104,8 +103,9 @@ window = sg.Window('Dashboard PySimpleGUI-Style', layout, margins=(0,0), backgro
 while True:
 
     # Event Loop
-
+    timenow1 = time.strftime("%H:%M:%S")    
     event, values = window.read()
+    
     if event == sg.WIN_CLOSED or event == ' X ':
         break
         
@@ -114,6 +114,13 @@ while True:
         os.system('python SR_s2t.py')
         #cwd = os.getcwd()
         #print(cwd)
+        pass
+
+    if event == 'Enter':
+        #manual writing of text from text box
+        window.Element('cons1').Update('Auto Enter Pressed')
+        li = [values['aspker'] + ' at ' + str(timenow1) + ': ', values['autospeech']] 
+        append_file(file_name, li)
         pass
         
     if event == 'Manual Enter':
