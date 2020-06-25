@@ -163,7 +163,7 @@ while True:             # Event Loop
         
     if event == 'Start Recording':
         window.Element('cons1').Update('Recording Starts')
-        os.system('python wave1good1.py')
+        os.system('python SR_s2t.py')
         #cwd = os.getcwd()
         #print(cwd)
         pass
