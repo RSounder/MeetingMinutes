@@ -4,6 +4,9 @@ import time
 import os
 import keyboard
 
+today = datetime.date.today()
+d1 = today.strftime("%b_%d_%Y")
+
 def append_file(file_name, lines_to_append):
     
     with open(file_name, "a+") as file_object:
@@ -23,10 +26,6 @@ def append_file(file_name, lines_to_append):
                 appendEOL = True
             # Append element at the end of file
             file_object.write(line)
-
-
-
-today = datetime.date.today()
 
 theme_dict = {'BACKGROUND': '#2B475D',
                 'TEXT': '#FFFFFF',
@@ -99,6 +98,15 @@ layout = [[sg.Column(top_banner, size=(960, 60), pad=(0,0), background_color=DAR
            ]]
 
 window = sg.Window('Dashboard PySimpleGUI-Style', layout, margins=(0,0), background_color=BORDER_COLOR, no_titlebar=True, grab_anywhere=True)
+
+try:
+    today = datetime.date.today()
+    d1 = today.strftime("%b_%d_%Y")
+    os.mkdir('files_' + d1)
+    print(str(d1) + ' Folder Created')
+except:
+    print(str(d1) + ' Folder Exists')
+
 
 while True:
 
