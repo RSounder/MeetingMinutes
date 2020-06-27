@@ -1,25 +1,31 @@
 import PySimpleGUI as sg
-from datetime import datetime, time
-
+import datetime
 import speech_recognition as sr
 import keyboard
 import pyaudio
 import wave
+import os
+import shutil
 
+# gets the current working dir
+src_dir = os.getcwd() 
+
+today = datetime.date.today()
+d1 = today.strftime("%b_%d_%Y")
 
 audio = pyaudio.PyAudio()
 WAVE_OUTPUT_FILENAME = "output.wav"
 
-beginning_of_prog = datetime.now() 
+beginning_of_prog = datetime.datetime.now() 
 
-layout = [[sg.Text('Recording Time: '), sg.Text('', key='_time_', size=(10, 1))],
+layout = [[sg.Text('Record Seconds: '), sg.Text('', key='_time_', size=(10, 1))],
          [sg.Text(' '*17), sg.Quit()]]
 
-window = sg.Window('Simple Clock').Layout(layout)
+window = sg.Window('Recording...').Layout(layout)
 
 def getTime():
     
-    now = datetime.now()
+    now = datetime.datetime.now()
      
     return(now - beginning_of_prog).seconds
 
@@ -50,6 +56,7 @@ def main(gui_obj):
         frames.append(data)
 
         if event in (None, 'Quit'):
+            
 
             print ("finished recording")
              
@@ -66,7 +73,18 @@ def main(gui_obj):
             waveFile.writeframes(b''.join(frames))
             waveFile.close()
 
-              
+            d3 = datetime.datetime.now().strftime("%H_%M_%S")
+            # defining the dest directory
+            dst_dir  = os.path.join(src_dir , "files_"+ d1)
+            dst_file = os.path.join(src_dir , "files_"+ d1, "output" + ".wav")
+
+            src_file = os.path.join(src_dir , 'output.wav')
+            shutil.copy(src_file,dst_dir) #copy the file to destination dir
+
+            new_dst_file_name = os.path.join(dst_dir, "AutoRec_" + d3+ ".wav")
+
+            os.rename(dst_file, new_dst_file_name)#rename
+                          
             AUDIO_FILE = ("output.wav") 
               
             # use the audio file as the audio source 
