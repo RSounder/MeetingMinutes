@@ -14,5 +14,13 @@ for file in glob.glob("*.txt"):
     file_drive = drive.CreateFile({'title': fn })  
   file_drive.Upload()
   print ("The file: " + fn + " has been uploaded")
+
+for file in glob.glob("*.wav"):
+  print (file)
+  with open(file,"r") as f:
+    fn = os.path.basename(f.name)
+    file_drive = drive.CreateFile({'title': fn })  
+  file_drive.Upload()
+  print ("The file: " + fn + " has been uploaded")
    
 print ("All files have been uploaded")
