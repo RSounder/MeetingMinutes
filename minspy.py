@@ -84,10 +84,11 @@ block_3 = [[sg.Text('Manual Minutes', font='Any 15')],
 block_4 = [[sg.Text('Add Attendees', font='Any 15')],[sg.Text('Name:', size = (5,1)), sg.Input(size=(18,1),key='addattn')],[sg.Text(' ', size = (18,1)), sg.Button('Add',key='addattnbut')]]
 block_6 = [[sg.Text('Status Console', font='Any 15')],[sg.Text('Status: Initialised', size = (25,1),key='cons1')],[sg.Multiline('', size = (25,4),key='cons2')]]
 
-block_5 = [[sg.Text('Text to PDF', font='Any 15')],
+block_5 = [[sg.Text('Format + Save', font='Any 15')],
             [sg.T('Select the .txt file to be converted to pdf')],
-            [sg.Input(), sg.FileBrowse()],
-            [sg.Text(' ', size = (32,1)), sg.Button('Convert')]]
+            [sg.Input(key = 'convert'), sg.FileBrowse()],
+            [sg.Text(' ', size = (18,1)),sg.Button('Convert file'), sg.Button('Upload folder')],
+           ]
 
 layout = [[sg.Column(top_banner, size=(960, 60), pad=(0,0), background_color=DARK_HEADER_COLOR)],
           [sg.Column(top, size=(910, 90), pad=BPAD_TOP)],
