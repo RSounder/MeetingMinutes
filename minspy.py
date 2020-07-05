@@ -10,6 +10,24 @@ from pydrive.drive import GoogleDrive
 today = datetime.date.today()
 d1 = today.strftime("%b_%d_%Y")
 
+def parseattendees():
+    total = []
+    with open('members.txt') as f:
+      total = [line.rstrip() for line in f]
+
+    print(total)
+
+    absentees = []
+    presentees = []
+    for line in total:
+      if (line[-1] == 'x'):
+        absentees.append(line.rstrip(',x'))
+      if (line[-1] == 'p'):
+        presentees.append(line.rstrip(',p'))
+
+    print(absentees)
+    print(presentees)
+
 def append_file(file_name, lines_to_append):
     
     with open(file_name, "a+") as file_object:
@@ -68,15 +86,16 @@ file_name = 'Minutes of ' + meetname + ' ' + today.strftime("%B_%d_%Y")+'.txt'
 
 detailstr = 'Host Club: ' + clubname + ' | Club ID: ' + clubid + ' | RID: ' + rid + ' | Chair: ' + chair + ' | Minutes by: ' + minsby
 
-top  = [[sg.Text('Meeting Name here', size=(40,1), justification='c', pad=BPAD_TOP, font='Any 20')],
+top  = [[sg.Text(meetname, size=(40,1), justification='c', pad=BPAD_TOP, font='Any 20')],
             [sg.Text(detailstr, size=(109,1), justification='c',  font='Any 8')], ]
 
 block_2 = [[sg.Text('Auto Transcribe', font='Any 15')],
-            [sg.Text('Speaker:', size = (10,1)), sg.InputCombo(values = attnlis, size=(20, 1),key='aspker'),sg.Button('Start Recording')] ,
-            [sg.Text('', size = (10,1)),sg.Multiline(' ', size = (40,3), key ='autospeech')  ],[sg.Text(' ', size = (35,1)),sg.Button('Commit'),sg.Button('Enter')]]
+            [sg.Text('Agenda Item:', size = (10,1)), sg.InputCombo(values = attnlis, size=(20, 1),key='agendaitem'),sg.Button('Start Recording')] ,
+            [sg.Text('', size = (10,1)),sg.Multiline(' ', size = (68,3), key ='autospeech')  ],[sg.Text(' ', size = (35,1)),sg.Button('Commit'),sg.Button('Enter')]]
 
 block_4 = [[sg.Text('Add Attendees', font='Any 15')],[sg.Text('Name:', size = (5,1)), sg.Input(size=(18,1),key='addattn')],[sg.Text(' ', size = (18,1)), sg.Button('Add',key='addattnbut')]]
 block_6 = [[sg.Text('Status Console', font='Any 15')],[sg.Text('Status: Initialised', size = (25,1),key='cons1')],[sg.Multiline('', size = (25,4),key='cons2')]]
+
 
 block_3 = [[sg.Text('Format + Save', font='Any 15')],
             [sg.T('Select the .txt file to be converted to pdf')],
@@ -84,12 +103,11 @@ block_3 = [[sg.Text('Format + Save', font='Any 15')],
             [sg.Text(' ', size = (18,1)),sg.Button('Convert file'), sg.Button('Upload folder')],
            ]
 
-layout = [[sg.Column(top_banner, size=(740, 60), pad=(0,0), background_color=DARK_HEADER_COLOR)],
-          [sg.Column(top, size=(685, 90), pad=BPAD_TOP)],
-          [sg.Column([[sg.Column(block_2, size=(440,160), pad=BPAD_LEFT_INSIDE)],
+layout = [[sg.Column(top_banner, size=(710, 60), pad=(0,0), background_color=DARK_HEADER_COLOR)],
+          [sg.Column(top, size=(650, 90), pad=BPAD_TOP)],
+          [sg.Column([[sg.Column(block_2, size=(650,360), pad=BPAD_LEFT_INSIDE)],
                       [sg.Column(block_3, size=(440,160),  pad=BPAD_LEFT_INSIDE)]], pad=BPAD_LEFT, background_color=BORDER_COLOR),
-           sg.Column([[sg.Column(block_4, size=(210,160), pad=BPAD_LEFT_INSIDE)],
-                      [sg.Column(block_6, size=(210,160),  pad=BPAD_LEFT_INSIDE)]], pad=BPAD_LEFT, background_color=BORDER_COLOR),
+
            ]]
 
 window = sg.Window('Dashboard PySimpleGUI-Style', layout, margins=(0,0), background_color=BORDER_COLOR, no_titlebar=True, grab_anywhere=True)
@@ -104,99 +122,12 @@ except:
 
 
 while True:
-
-    # Event Loop
-    timenow1 = time.strftime("%H:%M:%S")    
-    event, values = window.read()
     
-    if event == sg.WIN_CLOSED or event == ' X ':
-        break
+        event, values = window.read()
         
-    if event == 'Start Recording':
-        window.Element('cons1').Update('Recording Starts')
-        os.system('python SR_s2t.py')
-        #cwd = os.getcwd()
-        #print(cwd)
-        pass
-
-    if event == 'Enter':
-        #writing of text from text box
-        window.Element('cons1').Update('Auto Enter Pressed')
-        li = [values['aspker'] + ' at ' + str(timenow1) + ': ', values['autospeech']] 
-        append_file(file_name, li)
-        pass
-        
-    if event == 'Commit':
-        #publishing text from s2t.txt to multiline
-        with open('s2t.txt') as ff:
-            datastr = ff.read()
-        window.Element('autospeech').Update(datastr)
-        pass
-    
-    if event == 'addattnbut':
-        #add attends
-        window.Element('cons1').Update('Added' + ' ' + values['addattn'])
-
-        attnlis.append(values['addattn'])
-        attnset=set(attnlis)
-        attnlis=list(attnset)
-        
-        window.Element('aspker').Update(values = attnlis)
-        
-        pass
-
-    if event == 'Convert file':
-   
-        pdf = FPDF()    
-           
-        pdf.add_page() 
-           
-        pdf.set_font("times", size = 14) 
-
-        head, tail = os.path.split(values["convert"])  
-        f = open(tail, "r") 
-        
-        for x in f: 
-            pdf.cell(200, 10, txt = x, ln = 1, align = 'l') 
-           
-        pdf.output(tail[0:-4]+".pdf")    
-        print(tail[0:-4] + ".pdf" + " created")
-        window.Element('cons1').Update('Created' + ' ' + tail[0:-4] + '.pdf')
-        
-
-    if event == 'Upload folder':
-
-        #gdrive auth
-        g_login = GoogleAuth()
-        g_login.LocalWebserverAuth()
-        drive = GoogleDrive(g_login)
-        
-        with open(file_name,"r") as f:
-            fn = os.path.basename(f.name)
-            file_drive = drive.CreateFile({'title': fn })  
-        file_drive.Upload()
-        print ("The file: " + fn + " has been uploaded")
-
-        os.chdir("files_" + d1)
-
-        for file in glob.glob("*.wav"):
-          print (file)
-          with open(file,"r") as f:
-            fn = os.path.basename(f.name)
-            file_drive = drive.CreateFile({'title': fn })  
-          file_drive.Upload()
-          print ("The file: " + fn + " has been uploaded")
-
-        try:          
-            with open(file_name[:-4] + ".pdf","r") as f:
-                fn = os.path.basename(f.name)
-                file_drive = drive.CreateFile({'title': fn })  
-            file_drive.Upload()
-            print ("The file: " + fn + " has been uploaded")
-        except:
-            print ("No PDF was found under name" + fn )
-
-        window.Element('cons1').Update('Uploads Finished')
-        
+        if event == sg.WIN_CLOSED or event == ' X ':
+            break
+            
+            
 print("Closing Application")
 window.close()
